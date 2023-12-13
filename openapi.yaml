@@ -1,0 +1,812 @@
+openapi: 3.0.3
+
+
+info:
+  title: SmartSKY - OpenAPI 3.0
+  description: |-
+    This is a SmartSKY Server based on the OpenAPI 3.0 specification.  
+  termsOfService: https://github.com/EVR-1/SmartSKY
+  contact:
+    url: https://github.com/EVR-1/SmartSKY
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+
+
+externalDocs:
+  description: Find out more about SmartSKY
+  url: https://github.com/EVR-1/SmartSKY
+  
+  
+servers:
+  - url: https://smartsky.ru/api/v1
+
+tags:
+  - name: Aircraft
+    description: Everything about Aicraft
+    externalDocs:
+      description: Find out more
+      url: https://github.com/EVR-1/SmartSKY
+  - name: Repair
+    description: Bid repairs
+    externalDocs:
+      description: Submit a repair request aircraft
+      url: https://github.com/EVR-1/SmartSKY
+  - name: Notifying
+    description: Prediction analytics
+
+
+paths:
+
+  /checkdata:
+    get:
+      tags:
+        - Aircraft
+      summary: View Database Aircraft
+      description: View Database Aircraft
+      operationId: checkData
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Aircraft'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Aircraft'
+            application/x-www-form-urlencoded:
+              schema:
+                $ref: '#/components/schemas/Aircraft'
+        '404':
+          description: Server not found
+
+  /aircraft:
+    post:
+      tags:
+        - Aircraft
+      summary: Add a new aircraft 
+      description: Add a new aircraft
+      operationId: addAircraft
+      requestBody:
+        description: Create a new Aircraft
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aircraft'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Aircraft'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Aircraft'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Aircraft'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Aircraft'
+        '405':
+          description: Invalid input
+      security:
+        - aircraftdb_auth:
+            - write:aircrafts
+            - read:aircrafts
+  /aircraft/{aircraftId} :         
+    put:
+      tags:
+        - Aircraft
+      summary: Update an existing aircraft
+      description: Update an existing aircraft by Id
+      operationId: updateAircraft
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: aircraftId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: name
+          in: query
+          description: Aircraft name to add
+          required: true
+          schema:
+            type: string
+        - name: dateIn
+          in: query
+          description: Aircraft dateIn to add
+          required: true
+          schema:
+            type: string
+            format: datetime
+        - name: numbers
+          in: query
+          description: Aircraft numbers to add
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: TimeFailure
+          in: query
+          description: Aircraft TimeFailure to add
+          required: false
+          schema:
+            type: string
+            format: time
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Aircraft'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Aircraft'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Aircraft not found
+        '405':
+          description: Validation exception
+      security:
+        - aircraftdb_auth:
+            - write:aircrafts
+            - read:aircrafts
+    
+    get:
+      tags:
+        - Aircraft
+      summary: Find Aircraft by ID
+      description: Returns a single Aircraft
+      operationId: getAircraftById
+      parameters:
+        - name: aircraftId
+          in: path
+          description: ID of Aircraft to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Aircraft'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Aircraft'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Aircraft not found
+      security:
+        - api_key: []
+        - aircraftdb_auth:
+            - write:aircraft
+            - read:aircraft
+            
+    delete:
+      tags:
+        - Aircraft
+      summary: Deletes a Aircraft
+      description: delete a Aircraft
+      operationId: deleteAircraft
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: aircraftId
+          in: path
+          description: Aircraft id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Invalid Aircraft value
+      security:
+        - aircraftdb_auth:
+            - write:aircraft
+            - read:aircraft
+            
+                    
+            
+            
+  /aircraft/type:
+  
+    post:
+      tags:
+        - Aircraft
+      summary: Create an existing aircraft type
+      description: Create an existing aircraf type by Id
+      operationId: createAircraftType
+      requestBody:
+        description: Create an existent Aircraft Type 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AircraftType'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/AircraftType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AircraftType'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AircraftType'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AircraftType'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Aircraft Type not found
+        '405':
+          description: Validation exception
+      security:
+        - aircraftdb_auth:
+            - write:aircrafts
+            - read:aircrafts
+            
+            
+  /aircraft/type/{aircraftTypeId}:
+  
+    delete:
+      tags:
+        - Aircraft
+      summary: Delete a Aircraft type
+      description: Delete a Aircraft type
+      operationId: deleteAircraftType
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: aircraftTypeId
+          in: path
+          description: AircraftType id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Invalid Aircraft Type ID value
+      security:
+        - aircraftdb_auth:
+            - write:aircraft
+            - read:aircraft
+            
+    get:
+      tags:
+        - Aircraft
+      summary: Find Aircraft by ID
+      description: Returns a single Aircraft
+      operationId: getAircraftTypeById
+      parameters:
+        - name: aircraftTypeId
+          in: path
+          description: ID of Aircraft to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AircraftType'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AircraftType'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Aircraft Type not found
+      security:
+        - api_key: []
+        - aircraftdb_auth:
+            - write:aircraft
+            - read:aircraft
+            
+    put:
+      tags:
+        - Aircraft
+      summary: Updates a aircraft with form data
+      description: ''
+      operationId: updateAircraftWithForm
+      parameters:
+        - name: aircraftTypeId
+          in: path
+          description: ID of aircraft that needs to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: DowntimeRatio
+          in: query
+          description: Name of aircraft that needs to be updated
+          schema:
+            type: integer
+            format: int64
+        - name: AverageRecoveryTime
+          in: query
+          description: Status of aircraft that needs to be updated
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AircraftType'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AircraftType'
+        '405':
+          description: Invalid input
+      security:
+        - aircraftdb_auth:
+            - write:aircraft
+            - read:aircraft
+            
+          
+  
+  /repair:
+  
+    post:
+      tags:
+        - Repair
+      summary: Add a new bid repair 
+      description: Add a new bid repair 
+      operationId: addBid
+      requestBody:
+        description: Add a new bid repair 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bid'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Bid'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Bid'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bid'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Bid'
+        '405':
+          description: Invalid input
+      security:
+        - aircraftdb_auth:
+            - write:aircrafts
+            - read:aircrafts
+            
+        
+  /repair/assigntechician{username}:
+  
+    get:
+      tags:
+        - Repair
+      summary: Wired techician by user name for repair
+      description: ''
+      operationId: getUserByName
+      parameters:
+        - name: username
+          in: path
+          description: 'The name that needs to be fetched. Use user1 for testing. '
+          required: true
+          schema:
+            type: string
+        - name: BidId
+          in: query
+          description: 'The Bid Id wired '
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bid'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Bid'
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+        
+        
+  /repair/orderDetails:
+  
+    post:
+      tags:
+        - Repair
+      summary: Create order to repair
+      description: Create order to repair
+      operationId: placeOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Order'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '405':
+          description: Invalid input
+          
+          
+  /notifying/GetDiagnosis:
+  
+    post:
+      tags:
+        - Notifying
+      summary: Returns aircraft diagnosis
+      description: Returns a map of status codes to quantities
+      operationId: getDiagnosis
+      parameters:
+        - name: FileHistoryFailure
+          in: query
+          required: true
+          schema:
+            type: object
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aircraft'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Aircraft'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Aircraft'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            Report:
+              schema:
+                type: object
+            Readiness/integer:
+              schema:
+                type: integer
+                format: int64
+        '404':
+          description: Not found Aircraft
+      security:
+        - api_key: []
+        
+  /notifying/GetPrediction:
+  
+    post:
+      tags:
+        - Notifying
+      summary: Returns aircraft prediction
+      description: Returns a map of status codes to quantities
+      operationId: getPrediction
+      parameters:
+        - name: FileHistoryFailure
+          in: query
+          required: true
+          schema:
+            type: object
+      responses:
+        '200':
+          description: successful operation
+          content:
+            Report:
+              schema:
+                type: object
+        '404':
+          description: Aircraft not found
+      security:
+        - api_key: []
+        
+  /notifying/GetReadiness:
+  
+    post:
+      tags:
+        - Notifying
+      summary: Returns aircraft readiness
+      description: Returns a map of status codes to quantities
+      operationId: getReadiness
+      parameters:
+        - name: FileHistoryFailure
+          in: query
+          required: true
+          schema:
+            type: object
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aircraft'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Aircraft'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Aircraft'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            Readiness/integer:
+              schema:
+                type: integer
+                format: int64
+      security:
+        - api_key: []
+          
+
+          
+          
+components:
+  schemas:
+  
+  
+    Order:
+      type: object
+      properties:
+      
+        id:
+          type: integer
+          format: int64
+          example: 10
+          
+        aircraftId:
+          type: integer
+          format: int64
+          example: 198772
+          
+        quantity:
+          type: integer
+          format: int32
+          example: 7
+          
+        shipDate:
+          type: string
+          format: date-time
+          
+        DetailName:
+          type: string
+          description: Order Status
+          example: Seat
+          enum:
+            - landing gear
+            - tire
+            - delivered
+            - porthole
+            - seat
+            - headlight
+            - propeller
+            - interior panel
+            - navigation lights
+            - wipers
+        complete:
+          type: boolean
+      xml:
+        name: order
+        
+        
+    Technician:
+      type: object
+      properties:
+      
+        id:
+          type: integer
+          format: int64
+          example: 100000
+          
+        name:
+          type: string
+          example: Dimitrievsky Vladislav Sergeevich
+        
+        
+        
+        
+    Aircraft:
+      required:
+        - name
+        - dateIn
+        - Numbers
+        - TimeFailure
+      type: object
+      properties:
+      
+        id:
+          type: integer
+          format: int64
+          example: 10
+          
+        name:
+          type: string
+          example: IL-96-300
+          
+        aircraftType:
+          $ref: '#/components/schemas/AircraftType'
+          
+              
+        dateIn:
+          type: string
+          format: date-time
+          example : 11.09.2020
+          
+        Numbers:
+          type: integer
+          format: int64
+          example: 4
+          
+        TimeFailure:
+          type: string
+          format: time
+          example: 11:18
+          
+        status:
+          type: string
+          description: Aircraft status in the store
+          enum:
+            - available
+            - pending
+            - sold
+      xml:
+        name: Aircraft
+    
+    Bid:
+      required:
+        - aircraft
+        - technician
+        - order
+        - completed
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 56
+          
+        aircraft:
+          $ref: '#/components/schemas/Aircraft'
+          
+        technician:
+          $ref: '#/components/schemas/Technician'
+          
+        order:
+          $ref: '#/components/schemas/Order'
+          
+        completed:
+          type: boolean
+          example: True
+          
+      xml:
+        name: Bid
+        
+    AircraftType:
+      required:
+        - DowntimeRatio
+        - AverageRecoveryTime
+      type: object
+      properties:
+      
+        id:
+          type: integer
+          format: int64
+          example: 27678
+          
+        DowntimeRatio:
+          type: integer
+          format: int64
+          example: 45
+          
+        AverageRecoveryTime:
+          type: integer
+          format: int64
+          example: 890
+          
+          
+    ApiResponse:
+      type: object
+      properties:
+      
+        code:
+          type: integer
+          format: int32
+          
+        type:
+          type: string
+          
+        message:
+          type: string
+      xml:
+        name: '##default'
+        
+        
+        
+  requestBodies:
+    Aircraft:
+      description: Aircraft object that needs to be added to the store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Aircraft'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/Aircraft'
+            
+            
+              
+              
+              
+  securitySchemes:
+    aircraftdb_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://smartsky.ru/oauth/authorize
+          scopes:
+            write:Aircrafts: modify aircraft in your account
+            read:Aircrafts: read your aircraft
+            
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
